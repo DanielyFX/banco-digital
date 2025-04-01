@@ -23,6 +23,6 @@ public record RequestCriacaoContaDTO(
         @Schema(description = "Nome do titular da conta", type = "integer", example = "João da Silva", required = true) String titular,
         @Schema(description = "Número da conta", type = "integer", example = "1568", required = true) int conta,
         @Schema(description = "Número da agência", type = "integer", example = "258", required = true) int agencia,
-        @Schema(description = "Saldo inicial da conta", type = "integer", example = "1000.0", required = true) double saldo
+        @Schema(description = "Saldo inicial da conta", type = "integer", example = "1000.0", required = false) double saldo
 ) implements Serializable {
 }

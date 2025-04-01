@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OperacaoBancariaUseCase {
     ResponseCriacaoDeContaDTO criarContaCorrente(RequestCriacaoContaDTO conta);
+    ResponseCriacaoDeContaDTO criarContaPoupanca(RequestCriacaoContaDTO conta);
 
 }

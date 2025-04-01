@@ -26,13 +26,30 @@ public class OperacaoBancariaController {
             @RequestHeader String titular,
             @RequestHeader int conta,
             @RequestHeader int agencia,
-            @RequestHeader(required = false) double saldo){
+            @RequestHeader(required = false) Double saldo){
         ResponseCriacaoDeContaDTO response = operacaoBancariaUseCase.criarContaCorrente(
                 RequestCriacaoContaDTO.builder()
                         .titular(titular)
                         .conta(conta)
                         .agencia(agencia)
-                        .saldo(saldo)
+                        .saldo(saldo != null ? saldo : 0.00)
+                        .build()
+                );
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/criar-conta-poupanca")
+    public ResponseEntity<ResponseCriacaoDeContaDTO> criarContaPoupanca(
+            @RequestHeader String titular,
+            @RequestHeader int conta,
+            @RequestHeader int agencia,
+            @RequestHeader(required = false) Double saldo){
+        ResponseCriacaoDeContaDTO response = operacaoBancariaUseCase.criarContaPoupanca(
+                RequestCriacaoContaDTO.builder()
+                        .titular(titular)
+                        .conta(conta)
+                        .agencia(agencia)
+                        .saldo(saldo != null ? saldo : 0.00)
                         .build()
                 );
         return ResponseEntity.ok(response);

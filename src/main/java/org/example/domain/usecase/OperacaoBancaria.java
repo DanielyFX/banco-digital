@@ -35,4 +35,20 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
                         .build())
                 .build();
     }
+
+    @Override
+    public ResponseCriacaoDeContaDTO criarContaPoupanca(RequestCriacaoContaDTO conta) {
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        Conta contaPoupanca = operacaoBancariaStrategy.criarContaPoupanca(conta);
+        return ResponseCriacaoDeContaDTO.builder().
+                conta(contaPoupanca.getConta()).
+                agencia(contaPoupanca.getAgencia()).
+                detail(DetailDTO.builder()
+                        .codigoRetorno("201")
+                        .mensagemRetorno("Conta criada com sucesso")
+                        .timestampInicio(timestampInicio.toString())
+                        .timestampFim(LocalDateTime.now().toString())
+                        .build())
+                .build();
+    }
 }
