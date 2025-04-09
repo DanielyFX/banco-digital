@@ -4,10 +4,8 @@ import org.example.adapter.exception.infrastructure.InfrastructureException;
 import org.example.adapter.input.dto.RequestConsultarContaDTO;
 import org.example.adapter.input.dto.RequestCriacaoContaDTO;
 import org.example.adapter.input.dto.RequestDepositoDTO;
-import org.example.adapter.output.dto.DetailDTO;
-import org.example.adapter.output.dto.ResponseConsultaContaDTO;
-import org.example.adapter.output.dto.ResponseCriacaoDeContaDTO;
-import org.example.adapter.output.dto.ResponseDepositoDTO;
+import org.example.adapter.input.dto.RequestSaqueDTO;
+import org.example.adapter.output.dto.*;
 import org.example.domain.entities.Conta;
 import org.example.domain.entities.ContaCorrente;
 import org.example.domain.entities.ContaPoupanca;
@@ -113,8 +111,7 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
         LocalDateTime timestampInicio = LocalDateTime.now();
         try{
             ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
-            contaCorrente.setSaldo(contaCorrente.getSaldo() + Double.parseDouble(conta.valor()));
-            operacaoBancariaStrategy.depositarContaCorrente(contaCorrente);
+            operacaoBancariaStrategy.depositarContaCorrente(contaCorrente, Double.parseDouble(conta.valor()));
             return ResponseDepositoDTO.builder()
                     .conta(((Integer) contaCorrente.getConta()).toString())
                     .agencia(((Integer)contaCorrente.getAgencia()).toString())
@@ -131,12 +128,33 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
     }
 
     @Override
+    public ResponseSaqueDTO sacarContaCorrente(RequestSaqueDTO conta) {
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        try{
+            ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
+            operacaoBancariaStrategy.sacarContaCorrente(contaCorrente, Double.parseDouble(conta.valor()));
+            return ResponseSaqueDTO.builder()
+                    .conta(((Integer) contaCorrente.getConta()).toString())
+                    .agencia(((Integer)contaCorrente.getAgencia()).toString())
+                    .valorSacado(contaCorrente.getSaldo())
+                    .detail(DetailDTO.builder()
+                            .codigoRetorno("200")
+                            .mensagemRetorno("Saque realizado com sucesso")
+                            .timestampInicio(timestampInicio.toString())
+                            .timestampFim(LocalDateTime.now().toString())
+                            .build())
+                    .build();
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
+    }
+
+    @Override
     public ResponseDepositoDTO depositarContaPoupanca(RequestDepositoDTO conta) {
         LocalDateTime timestampInicio = LocalDateTime.now();
         try{
             ContaPoupanca contaPopupanca = (ContaPoupanca) operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
-            contaPopupanca.setSaldo(contaPopupanca.getSaldo() + Double.parseDouble(conta.valor()));
-            operacaoBancariaStrategy.depositarContaPoupanca(contaPopupanca);
+            operacaoBancariaStrategy.depositarContaPoupanca(contaPopupanca, Double.parseDouble(conta.valor()));
             return ResponseDepositoDTO.builder()
                     .conta(((Integer) contaPopupanca.getConta()).toString())
                     .agencia(((Integer)contaPopupanca.getAgencia()).toString())

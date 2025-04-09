@@ -49,12 +49,19 @@ public class OperacaoBancariaStrategy{
         return contaPoupancaRepository.findByContaAndAgencia(conta, agencia);
     }
 
-    public Conta depositarContaCorrente(ContaCorrente contaCorrente){
+    public Conta depositarContaCorrente(ContaCorrente contaCorrente, double valor){
+        contaCorrente.setSaldo(contaCorrente.getSaldo() + valor);
         return contaCorrenteRepository.save(contaCorrente);
     }
 
-    public Conta depositarContaPoupanca(ContaPoupanca contaPoupanca){
+    public Conta depositarContaPoupanca(ContaPoupanca contaPoupanca, double valor){
+        contaPoupanca.setSaldo(contaPoupanca.getSaldo() + valor);
         return contaPoupancaRepository.save(contaPoupanca);
+    }
+
+    public Conta sacarContaCorrente(ContaCorrente contaCorrente, double valor){
+        contaCorrente.setSaldo(contaCorrente.getSaldo() - valor);
+        return contaCorrenteRepository.save(contaCorrente);
     }
 
 }
