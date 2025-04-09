@@ -87,6 +87,28 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
     }
 
     @Override
+    public ResponseConsultaContaDTO consultarContaPoupanca(RequestConsultarContaDTO consultarContaDTO){
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        try{
+            ContaPoupanca contaPoupanca = (ContaPoupanca) operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(consultarContaDTO.conta()), Integer.parseInt(consultarContaDTO.agencia()));
+            return ResponseConsultaContaDTO.builder()
+                    .titular(contaPoupanca.getTitular())
+                    .conta(contaPoupanca.getConta())
+                    .agencia(contaPoupanca.getAgencia())
+                    .saldo(contaPoupanca.getSaldo())
+                    .detail(DetailDTO.builder()
+                            .codigoRetorno("200")
+                            .mensagemRetorno("Consulta realizada com sucesso")
+                            .timestampInicio(timestampInicio.toString())
+                            .timestampFim(LocalDateTime.now().toString())
+                            .build())
+                    .build();
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
+    }
+
+    @Override
     public ResponseDepositoDTO depositarContaCorrente(RequestDepositoDTO conta) {
         LocalDateTime timestampInicio = LocalDateTime.now();
         try{

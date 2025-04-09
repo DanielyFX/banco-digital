@@ -103,4 +103,17 @@ public class OperacaoBancariaController {
         );
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/consultar-conta-poupanca/{conta}/{agencia}")
+    public ResponseEntity<ResponseConsultaContaDTO> consultarContaPoupanca(
+            @PathVariable String conta,
+            @PathVariable String agencia){
+        ResponseConsultaContaDTO response = operacaoBancariaUseCase.consultarContaPoupanca(
+                RequestConsultarContaDTO.builder()
+                        .conta(conta)
+                        .agencia(agencia)
+                        .build()
+        );
+        return ResponseEntity.ok(response);
+    }
 }
