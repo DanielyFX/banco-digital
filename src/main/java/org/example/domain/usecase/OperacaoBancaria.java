@@ -232,4 +232,32 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
             throw new InfrastructureException("202", ex.getMessage());
         }
     }
+
+    @Override
+    public ResponseListaContasBancariasDTO listarExtratosContaCorrente(RequestConsultarContaDTO conta) {
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        try{
+            ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
+            return ResponseListaContasBancariasDTO.builder()
+                    .extratos(operacaoBancariaStrategy.listarExtratos(contaCorrente).stream()
+                    .map(extrato -> ResponseExtratoDTO.builder()
+                            .conta(((Integer)contaCorrente.getConta()).toString())
+                            .agencia(((Integer)contaCorrente.getAgencia()).toString())
+                            .transacao(extrato.getTipoTransacao())
+                            .valor(((Double) extrato.getValor()).toString())
+                            .descricao(extrato.getDescricao())
+                            .hora(extrato.getHora())
+                            .build())
+                    .toList())
+                    .detail(DetailDTO.builder()
+                            .codigoRetorno("200")
+                            .mensagemRetorno("Consulta realizada com sucesso")
+                            .timestampInicio(timestampInicio.toString())
+                            .timestampFim(LocalDateTime.now().toString())
+                            .build())
+                    .build();
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
+    }
 }

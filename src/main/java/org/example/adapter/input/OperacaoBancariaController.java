@@ -4,13 +4,12 @@ import org.example.adapter.input.dto.RequestConsultarContaDTO;
 import org.example.adapter.input.dto.RequestCriacaoContaDTO;
 import org.example.adapter.input.dto.RequestDepositoDTO;
 import org.example.adapter.input.dto.RequestSaqueDTO;
-import org.example.adapter.output.dto.ResponseConsultaContaDTO;
-import org.example.adapter.output.dto.ResponseCriacaoDeContaDTO;
-import org.example.adapter.output.dto.ResponseDepositoDTO;
-import org.example.adapter.output.dto.ResponseSaqueDTO;
+import org.example.adapter.output.dto.*;
 import org.example.port.input.OperacaoBancariaUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/operacao-bancaria")
@@ -143,6 +142,19 @@ public class OperacaoBancariaController {
             @PathVariable String conta,
             @PathVariable String agencia){
         ResponseConsultaContaDTO response = operacaoBancariaUseCase.consultarContaPoupanca(
+                RequestConsultarContaDTO.builder()
+                        .conta(conta)
+                        .agencia(agencia)
+                        .build()
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/listar-extrato-conta-corrente/{conta}/{agencia}")
+    public ResponseEntity<ResponseListaContasBancariasDTO> listarExtratosContaCorrente(
+            @PathVariable String conta,
+            @PathVariable String agencia){
+        ResponseListaContasBancariasDTO response = operacaoBancariaUseCase.listarExtratosContaCorrente(
                 RequestConsultarContaDTO.builder()
                         .conta(conta)
                         .agencia(agencia)

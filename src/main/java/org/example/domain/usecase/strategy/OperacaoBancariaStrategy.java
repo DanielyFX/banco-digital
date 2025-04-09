@@ -13,6 +13,7 @@ import org.example.port.output.ExtratoRespository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -83,6 +84,10 @@ public class OperacaoBancariaStrategy{
         extrato.setHora(LocalDate.now().toString());
         extratoRespository.save(extrato);
         return extrato;
+    }
+
+    public List<Extrato> listarExtratos(Conta conta){
+        return conta.getExtratos();
     }
 
 }
