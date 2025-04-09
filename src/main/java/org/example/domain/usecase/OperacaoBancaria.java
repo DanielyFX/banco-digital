@@ -8,6 +8,7 @@ import org.example.adapter.output.dto.ResponseCriacaoDeContaDTO;
 import org.example.adapter.output.dto.ResponseDepositoDTO;
 import org.example.domain.entities.Conta;
 import org.example.domain.entities.ContaCorrente;
+import org.example.domain.entities.ContaPoupanca;
 import org.example.domain.usecase.strategy.OperacaoBancariaStrategy;
 import org.example.port.input.OperacaoBancariaUseCase;
 import org.springframework.stereotype.Service;
@@ -71,6 +72,28 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
             return ResponseDepositoDTO.builder()
                     .conta(((Integer) contaCorrente.getConta()).toString())
                     .agencia(((Integer)contaCorrente.getAgencia()).toString())
+                    .detail(DetailDTO.builder()
+                            .codigoRetorno("200")
+                            .mensagemRetorno("Deposito realizado com sucesso")
+                            .timestampInicio(timestampInicio.toString())
+                            .timestampFim(LocalDateTime.now().toString())
+                            .build())
+                    .build();
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseDepositoDTO depositarContaPoupanca(RequestDepositoDTO conta) {
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        try{
+            ContaPoupanca contaPopupanca = (ContaPoupanca) operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
+            contaPopupanca.setSaldo(contaPopupanca.getSaldo() + Double.parseDouble(conta.valor()));
+            operacaoBancariaStrategy.depositarContaPoupanca(contaPopupanca);
+            return ResponseDepositoDTO.builder()
+                    .conta(((Integer) contaPopupanca.getConta()).toString())
+                    .agencia(((Integer)contaPopupanca.getAgencia()).toString())
                     .detail(DetailDTO.builder()
                             .codigoRetorno("200")
                             .mensagemRetorno("Deposito realizado com sucesso")

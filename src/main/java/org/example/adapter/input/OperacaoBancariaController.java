@@ -72,4 +72,20 @@ public class OperacaoBancariaController {
         );
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/depositar-conta-poupanca")
+    public ResponseEntity<ResponseDepositoDTO> depositarContaPoupanca(
+            @RequestHeader int conta,
+            @RequestHeader int agencia,
+            @RequestHeader double valor){
+        ResponseDepositoDTO response = operacaoBancariaUseCase.depositarContaPoupanca(
+                RequestDepositoDTO.builder()
+                        .conta(((Integer) conta).toString())
+                        .agencia(((Integer) agencia).toString())
+                        .valor(((Double) valor).toString())
+                        .build()
+
+        );
+        return ResponseEntity.ok(response);
+    }
 }

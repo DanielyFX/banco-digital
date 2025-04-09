@@ -13,5 +13,6 @@ public interface OperacaoBancariaUseCase {
     ResponseCriacaoDeContaDTO criarContaCorrente(RequestCriacaoContaDTO conta);
     ResponseCriacaoDeContaDTO criarContaPoupanca(RequestCriacaoContaDTO conta);
     ResponseDepositoDTO depositarContaCorrente(RequestDepositoDTO conta);
+    ResponseDepositoDTO depositarContaPoupanca(RequestDepositoDTO conta);
 
 }

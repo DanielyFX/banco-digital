@@ -5,4 +5,5 @@ import org.example.domain.entities.ContaPoupanca;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ContaPoupancaRepository extends JpaRepository<ContaPoupanca, Integer> {
+    ContaPoupanca findByContaAndAgencia(int conta, int agencia);
 }

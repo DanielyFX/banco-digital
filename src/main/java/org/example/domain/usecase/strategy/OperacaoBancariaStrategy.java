@@ -44,9 +44,16 @@ public class OperacaoBancariaStrategy{
         return contaCorrenteRepository.findByContaAndAgencia(conta, agencia);
     }
 
+    public Conta buscarContaPoupanca(int conta, int agencia){
+        return contaPoupancaRepository.findByContaAndAgencia(conta, agencia);
+    }
+
     public Conta depositarContaCorrente(ContaCorrente contaCorrente){
         return contaCorrenteRepository.save(contaCorrente);
+    }
 
+    public Conta depositarContaPoupanca(ContaPoupanca contaPoupanca){
+        return contaPoupancaRepository.save(contaPoupanca);
     }
 
 }
