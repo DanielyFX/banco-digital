@@ -9,11 +9,14 @@ import org.example.adapter.output.dto.*;
 import org.example.domain.entities.Conta;
 import org.example.domain.entities.ContaCorrente;
 import org.example.domain.entities.ContaPoupanca;
+import org.example.domain.entities.Extrato;
 import org.example.domain.usecase.strategy.OperacaoBancariaStrategy;
 import org.example.port.input.OperacaoBancariaUseCase;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class OperacaoBancaria implements OperacaoBancariaUseCase {
@@ -111,6 +114,13 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
         LocalDateTime timestampInicio = LocalDateTime.now();
         try{
             ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
+            Extrato extrato = operacaoBancariaStrategy.gravarExtrato(contaCorrente, "Deposito", "Inserção de valor na conta", Double.parseDouble(conta.valor()));
+            if (contaCorrente.getExtratos() == null) {
+                contaCorrente.setExtratos(new ArrayList<>());
+            }
+            List<Extrato> extratos = contaCorrente.getExtratos();
+            extratos.add(extrato);
+            contaCorrente.setExtratos(extratos);
             operacaoBancariaStrategy.depositarContaCorrente(contaCorrente, Double.parseDouble(conta.valor()));
             return ResponseDepositoDTO.builder()
                     .conta(((Integer) contaCorrente.getConta()).toString())
@@ -132,11 +142,22 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
         LocalDateTime timestampInicio = LocalDateTime.now();
         try{
             ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
+            Extrato extrato = operacaoBancariaStrategy.gravarExtrato(contaCorrente, "Saque", "Retirado de valor da conta", Double.parseDouble(conta.valor()));
+            if(contaCorrente.getSaldo() < Double.parseDouble(conta.valor())){
+                throw new InfrastructureException("202", "Saldo insuficiente");
+            }
+            if (contaCorrente.getExtratos() == null) {
+                contaCorrente.setExtratos(new ArrayList<>());
+            }
+            List<Extrato> extratos = contaCorrente.getExtratos();
+            extratos.add(extrato);
+            contaCorrente.setExtratos(extratos);
             operacaoBancariaStrategy.sacarContaCorrente(contaCorrente, Double.parseDouble(conta.valor()));
+
             return ResponseSaqueDTO.builder()
                     .conta(((Integer) contaCorrente.getConta()).toString())
                     .agencia(((Integer)contaCorrente.getAgencia()).toString())
-                    .valorSacado(contaCorrente.getSaldo())
+                    .saldo(contaCorrente.getSaldo())
                     .detail(DetailDTO.builder()
                             .codigoRetorno("200")
                             .mensagemRetorno("Saque realizado com sucesso")
@@ -153,14 +174,21 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
     public ResponseDepositoDTO depositarContaPoupanca(RequestDepositoDTO conta) {
         LocalDateTime timestampInicio = LocalDateTime.now();
         try{
-            ContaPoupanca contaPopupanca = (ContaPoupanca) operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
-            if(contaPopupanca.getSaldo() < Double.parseDouble(conta.valor())){
+            ContaPoupanca contaPoupanca = (ContaPoupanca) operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
+            if(contaPoupanca.getSaldo() < Double.parseDouble(conta.valor())){
                 throw new InfrastructureException("202", "Saldo insuficiente");
             }
-            operacaoBancariaStrategy.depositarContaPoupanca(contaPopupanca, Double.parseDouble(conta.valor()));
+            Extrato extrato = operacaoBancariaStrategy.gravarExtrato(contaPoupanca, "Deposito", "Inserção de valor na conta", Double.parseDouble(conta.valor()));
+            if (contaPoupanca.getExtratos() == null) {
+                contaPoupanca.setExtratos(new ArrayList<>());
+            }
+            List<Extrato> extratos = contaPoupanca.getExtratos();
+            extratos.add(extrato);
+            contaPoupanca.setExtratos(extratos);
+            operacaoBancariaStrategy.depositarContaPoupanca(contaPoupanca, Double.parseDouble(conta.valor()));
             return ResponseDepositoDTO.builder()
-                    .conta(((Integer) contaPopupanca.getConta()).toString())
-                    .agencia(((Integer)contaPopupanca.getAgencia()).toString())
+                    .conta(((Integer) contaPoupanca.getConta()).toString())
+                    .agencia(((Integer)contaPoupanca.getAgencia()).toString())
                     .detail(DetailDTO.builder()
                             .codigoRetorno("200")
                             .mensagemRetorno("Deposito realizado com sucesso")
@@ -181,11 +209,18 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
             if(contaPoupanca.getSaldo() < Double.parseDouble(conta.valor())){
                 throw new InfrastructureException("202", "Saldo insuficiente");
             }
+            Extrato extrato = operacaoBancariaStrategy.gravarExtrato(contaPoupanca, "Saque", "Retirado de valor da conta", Double.parseDouble(conta.valor()));
+            if (contaPoupanca.getExtratos() == null) {
+                contaPoupanca.setExtratos(new ArrayList<>());
+            }
+            List<Extrato> extratos = contaPoupanca.getExtratos();
+            extratos.add(extrato);
+            contaPoupanca.setExtratos(extratos);
             operacaoBancariaStrategy.sacarContaPoupanca(contaPoupanca, Double.parseDouble(conta.valor()));
             return ResponseSaqueDTO.builder()
                     .conta(((Integer) contaPoupanca.getConta()).toString())
                     .agencia(((Integer)contaPoupanca.getAgencia()).toString())
-                    .valorSacado(contaPoupanca.getSaldo())
+                    .saldo(contaPoupanca.getSaldo())
                     .detail(DetailDTO.builder()
                             .codigoRetorno("200")
                             .mensagemRetorno("Saque realizado com sucesso")

@@ -27,7 +27,7 @@ import java.io.Serializable;
 public record ResponseSaqueDTO(
         @Schema(description = "Número da conta", type = "integer", example = "123456") String conta,
         @Schema(description = "Número da agência", type = "integer", example = "1234") String agencia,
-        @Schema(description = "Valor sacado", type = "integer", example = "100.0") double valorSacado,
+        @Schema(description = "Saldo", type = "integer", example = "100.0") double saldo,
         @Schema(description = "Detalhe da chamada", type = "object", implementation = DetailDTO.class) DetailDTO detail
 ) implements Serializable {
 }

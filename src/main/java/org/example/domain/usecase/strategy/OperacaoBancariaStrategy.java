@@ -6,10 +6,13 @@ import org.example.adapter.input.dto.RequestDepositoDTO;
 import org.example.domain.entities.Conta;
 import org.example.domain.entities.ContaCorrente;
 import org.example.domain.entities.ContaPoupanca;
+import org.example.domain.entities.Extrato;
 import org.example.port.output.ContaCorrenteRepository;
 import org.example.port.output.ContaPoupancaRepository;
+import org.example.port.output.ExtratoRespository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -17,10 +20,13 @@ public class OperacaoBancariaStrategy{
 
     private final ContaCorrenteRepository contaCorrenteRepository;
     private final ContaPoupancaRepository contaPoupancaRepository;
+    private final ExtratoRespository extratoRespository;
 
-    public OperacaoBancariaStrategy(ContaCorrenteRepository contaCorrenteRepository, ContaPoupancaRepository contaPoupancaRepository){
+    public OperacaoBancariaStrategy(ContaCorrenteRepository contaCorrenteRepository, ContaPoupancaRepository contaPoupancaRepository,
+                                    ExtratoRespository extratoRespository){
         this.contaCorrenteRepository = contaCorrenteRepository;
         this.contaPoupancaRepository = contaPoupancaRepository;
+        this.extratoRespository = extratoRespository;
     }
 
     public Conta criarContaCorrente(RequestCriacaoContaDTO contaCorrenteRequestDTO){
@@ -69,6 +75,14 @@ public class OperacaoBancariaStrategy{
         return contaPoupancaRepository.save(contaPoupanca);
     }
 
-
+    public Extrato gravarExtrato(Conta conta, String tipoTransacao, String descricao, double valor){
+        Extrato extrato = new Extrato();
+        extrato.setTipoTransacao(tipoTransacao);
+        extrato.setValor(valor);
+        extrato.setDescricao(descricao);
+        extrato.setHora(LocalDate.now().toString());
+        extratoRespository.save(extrato);
+        return extrato;
+    }
 
 }
