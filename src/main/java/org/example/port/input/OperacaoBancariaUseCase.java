@@ -21,5 +21,6 @@ public interface OperacaoBancariaUseCase {
     ResponseConsultaContaDTO consultarContaCorrente(RequestConsultarContaDTO conta);
     ResponseConsultaContaDTO consultarContaPoupanca(RequestConsultarContaDTO conta);
     ResponseSaqueDTO sacarContaCorrente(RequestSaqueDTO conta);
+    ResponseSaqueDTO sacarContaPoupanca(RequestSaqueDTO conta);
 
 }

@@ -109,6 +109,22 @@ public class OperacaoBancariaController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/sacar-conta-poupanca")
+    public ResponseEntity<ResponseSaqueDTO> sacarContaPoupanca(
+            @RequestHeader int conta,
+            @RequestHeader int agencia,
+            @RequestHeader double valor){
+        ResponseSaqueDTO response = operacaoBancariaUseCase.sacarContaPoupanca(
+                RequestSaqueDTO.builder()
+                        .conta(((Integer) conta).toString())
+                        .agencia(((Integer) agencia).toString())
+                        .valor(((Double) valor).toString())
+                        .build()
+
+        );
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/consultar-conta-corrente/{conta}/{agencia}")
     public ResponseEntity<ResponseConsultaContaDTO> consultarContaCorrente(
             @PathVariable String conta,

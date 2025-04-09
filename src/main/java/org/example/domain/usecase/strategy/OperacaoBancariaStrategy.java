@@ -64,4 +64,11 @@ public class OperacaoBancariaStrategy{
         return contaCorrenteRepository.save(contaCorrente);
     }
 
+    public Conta sacarContaPoupanca(ContaPoupanca contaPoupanca, double valor){
+        contaPoupanca.setSaldo(contaPoupanca.getSaldo() - valor);
+        return contaPoupancaRepository.save(contaPoupanca);
+    }
+
+
+
 }
