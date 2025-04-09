@@ -234,21 +234,51 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
     }
 
     @Override
-    public ResponseListaContasBancariasDTO listarExtratosContaCorrente(RequestConsultarContaDTO conta) {
+    public ResponseListaExtratosDTO listarExtratosContaCorrente(RequestConsultarContaDTO conta) {
         LocalDateTime timestampInicio = LocalDateTime.now();
         try{
             ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
-            return ResponseListaContasBancariasDTO.builder()
+            return ResponseListaExtratosDTO.builder()
+                    .conta(((Integer)contaCorrente.getConta()).toString())
+                    .agencia(((Integer)contaCorrente.getAgencia()).toString())
                     .extratos(operacaoBancariaStrategy.listarExtratos(contaCorrente).stream()
                     .map(extrato -> ResponseExtratoDTO.builder()
-                            .conta(((Integer)contaCorrente.getConta()).toString())
-                            .agencia(((Integer)contaCorrente.getAgencia()).toString())
+                            .saldo(((Double)extrato.getSaldo()).toString())
                             .transacao(extrato.getTipoTransacao())
                             .valor(((Double) extrato.getValor()).toString())
                             .descricao(extrato.getDescricao())
-                            .hora(extrato.getHora())
+                            .data(extrato.getHora())
                             .build())
                     .toList())
+                    .detail(DetailDTO.builder()
+                            .codigoRetorno("200")
+                            .mensagemRetorno("Consulta realizada com sucesso")
+                            .timestampInicio(timestampInicio.toString())
+                            .timestampFim(LocalDateTime.now().toString())
+                            .build())
+                    .build();
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseListaExtratosDTO listarExtratosContaPoupanca(RequestConsultarContaDTO conta) {
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        try{
+            ContaPoupanca contaPoupanca = (ContaPoupanca) operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
+            return ResponseListaExtratosDTO.builder()
+                    .conta(((Integer)contaPoupanca.getConta()).toString())
+                    .agencia(((Integer)contaPoupanca.getAgencia()).toString())
+                    .extratos(operacaoBancariaStrategy.listarExtratos(contaPoupanca).stream()
+                            .map(extrato -> ResponseExtratoDTO.builder()
+                                    .saldo(((Double)extrato.getSaldo()).toString())
+                                    .transacao(extrato.getTipoTransacao())
+                                    .valor(((Double) extrato.getValor()).toString())
+                                    .descricao(extrato.getDescricao())
+                                    .data(extrato.getHora())
+                                    .build())
+                            .toList())
                     .detail(DetailDTO.builder()
                             .codigoRetorno("200")
                             .mensagemRetorno("Consulta realizada com sucesso")

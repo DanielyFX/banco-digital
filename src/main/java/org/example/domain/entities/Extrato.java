@@ -17,6 +17,7 @@ public class Extrato {
     @Column(name = "transacao")
     private String tipoTransacao;
 
+    private double saldo;
     private double valor;
     private String descricao;
     private String hora;

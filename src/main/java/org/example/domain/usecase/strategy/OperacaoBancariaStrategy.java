@@ -81,6 +81,7 @@ public class OperacaoBancariaStrategy{
         extrato.setTipoTransacao(tipoTransacao);
         extrato.setValor(valor);
         extrato.setDescricao(descricao);
+        extrato.setSaldo(conta.getSaldo());
         extrato.setHora(LocalDate.now().toString());
         extratoRespository.save(extrato);
         return extrato;

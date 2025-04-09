@@ -9,8 +9,6 @@ import org.example.port.input.OperacaoBancariaUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/operacao-bancaria")
 public class OperacaoBancariaController {
@@ -151,10 +149,23 @@ public class OperacaoBancariaController {
     }
 
     @GetMapping("/listar-extrato-conta-corrente/{conta}/{agencia}")
-    public ResponseEntity<ResponseListaContasBancariasDTO> listarExtratosContaCorrente(
+    public ResponseEntity<ResponseListaExtratosDTO> listarExtratosContaCorrente(
             @PathVariable String conta,
             @PathVariable String agencia){
-        ResponseListaContasBancariasDTO response = operacaoBancariaUseCase.listarExtratosContaCorrente(
+        ResponseListaExtratosDTO response = operacaoBancariaUseCase.listarExtratosContaCorrente(
+                RequestConsultarContaDTO.builder()
+                        .conta(conta)
+                        .agencia(agencia)
+                        .build()
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/listar-extrato-conta-poupanca/{conta}/{agencia}")
+    public ResponseEntity<ResponseListaExtratosDTO> listarExtratosContaPoupanca(
+            @PathVariable String conta,
+            @PathVariable String agencia){
+        ResponseListaExtratosDTO response = operacaoBancariaUseCase.listarExtratosContaPoupanca(
                 RequestConsultarContaDTO.builder()
                         .conta(conta)
                         .agencia(agencia)
