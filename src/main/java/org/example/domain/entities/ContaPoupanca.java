@@ -3,7 +3,7 @@ package org.example.domain.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "conta_corrente",
+@Table(name = "conta_poupanca",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"conta", "agencia"})
         })

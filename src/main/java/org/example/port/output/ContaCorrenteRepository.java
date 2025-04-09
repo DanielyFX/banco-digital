@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContaCorrenteRepository extends JpaRepository<ContaCorrente, Integer> {
+    ContaCorrente findByContaAndAgencia(int conta, int agencia);
 }

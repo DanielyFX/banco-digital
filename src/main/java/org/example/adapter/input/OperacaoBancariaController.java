@@ -1,7 +1,9 @@
 package org.example.adapter.input;
 
 import org.example.adapter.input.dto.RequestCriacaoContaDTO;
+import org.example.adapter.input.dto.RequestDepositoDTO;
 import org.example.adapter.output.dto.ResponseCriacaoDeContaDTO;
+import org.example.adapter.output.dto.ResponseDepositoDTO;
 import org.example.port.input.OperacaoBancariaUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +54,22 @@ public class OperacaoBancariaController {
                         .saldo(saldo != null ? saldo : 0.00)
                         .build()
                 );
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/depositar-conta-corrente")
+    public ResponseEntity<ResponseDepositoDTO> depositarContaCorrente(
+            @RequestHeader int conta,
+            @RequestHeader int agencia,
+            @RequestHeader double valor){
+        ResponseDepositoDTO response = operacaoBancariaUseCase.depositarContaCorrente(
+                RequestDepositoDTO.builder()
+                        .conta(((Integer) conta).toString())
+                        .agencia(((Integer) agencia).toString())
+                        .valor(((Double) valor).toString())
+                        .build()
+
+        );
         return ResponseEntity.ok(response);
     }
 }

@@ -1,6 +1,7 @@
 package org.example.domain.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 
 @Entity

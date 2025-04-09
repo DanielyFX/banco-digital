@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 //@ControllerAdvice
 //@Order(Ordered.HIGHEST_PRECEDENCE)
 public class InfraestructureExceptionHandler {
-    private static final Logger LOGGER_TECNICO = LoggerFactory.getLogger(InfraestructureExceptionHandler .class);
+    private static final Logger LOGGER_TECNICO = LoggerFactory.getLogger(InfraestructureExceptionHandler.class);
 
     @ExceptionHandler(InfrastructureException.class)
     public ResponseEntity<Object> hadleException(InfrastructureException ex){

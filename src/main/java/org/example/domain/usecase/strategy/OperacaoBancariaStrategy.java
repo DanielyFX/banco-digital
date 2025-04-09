@@ -1,12 +1,15 @@
 package org.example.domain.usecase.strategy;
 
 import org.example.adapter.input.dto.RequestCriacaoContaDTO;
+import org.example.adapter.input.dto.RequestDepositoDTO;
 import org.example.domain.entities.Conta;
 import org.example.domain.entities.ContaCorrente;
 import org.example.domain.entities.ContaPoupanca;
 import org.example.port.output.ContaCorrenteRepository;
 import org.example.port.output.ContaPoupancaRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class OperacaoBancariaStrategy{
@@ -35,6 +38,15 @@ public class OperacaoBancariaStrategy{
         contaPoupanca.setAgencia(requestCriacaoContaDTO.agencia());
         contaPoupanca.setSaldo(requestCriacaoContaDTO.saldo());
         return contaPoupancaRepository.save(contaPoupanca);
+    }
+
+    public Conta buscarContaCorrente(int conta, int agencia){
+        return contaCorrenteRepository.findByContaAndAgencia(conta, agencia);
+    }
+
+    public Conta depositarContaCorrente(ContaCorrente contaCorrente){
+        return contaCorrenteRepository.save(contaCorrente);
+
     }
 
 }
