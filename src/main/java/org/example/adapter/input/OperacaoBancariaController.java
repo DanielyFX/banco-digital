@@ -1,7 +1,9 @@
 package org.example.adapter.input;
 
+import org.example.adapter.input.dto.RequestConsultarContaDTO;
 import org.example.adapter.input.dto.RequestCriacaoContaDTO;
 import org.example.adapter.input.dto.RequestDepositoDTO;
+import org.example.adapter.output.dto.ResponseConsultaContaDTO;
 import org.example.adapter.output.dto.ResponseCriacaoDeContaDTO;
 import org.example.adapter.output.dto.ResponseDepositoDTO;
 import org.example.port.input.OperacaoBancariaUseCase;
@@ -85,6 +87,19 @@ public class OperacaoBancariaController {
                         .valor(((Double) valor).toString())
                         .build()
 
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/consultar-conta-corrente/{conta}/{agencia}")
+    public ResponseEntity<ResponseConsultaContaDTO> consultarContaCorrente(
+            @PathVariable String conta,
+            @PathVariable String agencia){
+        ResponseConsultaContaDTO response = operacaoBancariaUseCase.consultarContaCorrente(
+                RequestConsultarContaDTO.builder()
+                        .conta(conta)
+                        .agencia(agencia)
+                        .build()
         );
         return ResponseEntity.ok(response);
     }

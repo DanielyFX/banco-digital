@@ -1,9 +1,11 @@
 package org.example.domain.usecase;
 
 import org.example.adapter.exception.infrastructure.InfrastructureException;
+import org.example.adapter.input.dto.RequestConsultarContaDTO;
 import org.example.adapter.input.dto.RequestCriacaoContaDTO;
 import org.example.adapter.input.dto.RequestDepositoDTO;
 import org.example.adapter.output.dto.DetailDTO;
+import org.example.adapter.output.dto.ResponseConsultaContaDTO;
 import org.example.adapter.output.dto.ResponseCriacaoDeContaDTO;
 import org.example.adapter.output.dto.ResponseDepositoDTO;
 import org.example.domain.entities.Conta;
@@ -60,6 +62,28 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
             throw new InfrastructureException("202", ex.getMessage());
         }
 
+    }
+
+    @Override
+    public ResponseConsultaContaDTO consultarContaCorrente(RequestConsultarContaDTO consultarContaDTO){
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        try{
+            ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(consultarContaDTO.conta()), Integer.parseInt(consultarContaDTO.agencia()));
+            return ResponseConsultaContaDTO.builder()
+                    .titular(contaCorrente.getTitular())
+                    .conta(contaCorrente.getConta())
+                    .agencia(contaCorrente.getAgencia())
+                    .saldo(contaCorrente.getSaldo())
+                    .detail(DetailDTO.builder()
+                            .codigoRetorno("200")
+                            .mensagemRetorno("Consulta realizada com sucesso")
+                            .timestampInicio(timestampInicio.toString())
+                            .timestampFim(LocalDateTime.now().toString())
+                            .build())
+                    .build();
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
     }
 
     @Override
