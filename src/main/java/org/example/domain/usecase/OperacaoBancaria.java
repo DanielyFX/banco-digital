@@ -112,9 +112,9 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
         try{
             ContaCorrente contaCorrente = (ContaCorrente) operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(conta.conta()), Integer.parseInt(conta.agencia()));
             Extrato extrato = operacaoBancariaStrategy.gravarExtrato(contaCorrente, "Deposito", "Inserção de valor na conta", Double.parseDouble(conta.valor()));
-            if (contaCorrente.getExtratos() == null) {
-                contaCorrente.setExtratos(new ArrayList<>());
-            }
+            //if (contaCorrente.getExtratos() == null) {
+            //    contaCorrente.setExtratos(new ArrayList<>());
+            //}
             List<Extrato> extratos = contaCorrente.getExtratos();
             extratos.add(extrato);
             contaCorrente.setExtratos(extratos);
@@ -143,9 +143,9 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
             if(contaCorrente.getSaldo() < Double.parseDouble(conta.valor())){
                 throw new InfrastructureException("202", "Saldo insuficiente");
             }
-            if (contaCorrente.getExtratos() == null) {
-                contaCorrente.setExtratos(new ArrayList<>());
-            }
+            //if (contaCorrente.getExtratos() == null) {
+            //    contaCorrente.setExtratos(new ArrayList<>());
+            //}
             List<Extrato> extratos = contaCorrente.getExtratos();
             extratos.add(extrato);
             contaCorrente.setExtratos(extratos);
@@ -176,9 +176,9 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
                 throw new InfrastructureException("202", "Saldo insuficiente");
             }
             Extrato extrato = operacaoBancariaStrategy.gravarExtrato(contaPoupanca, "Deposito", "Inserção de valor na conta", Double.parseDouble(conta.valor()));
-            if (contaPoupanca.getExtratos() == null) {
-                contaPoupanca.setExtratos(new ArrayList<>());
-            }
+            //if (contaPoupanca.getExtratos() == null) {
+            //    contaPoupanca.setExtratos(new ArrayList<>());
+            //}
             List<Extrato> extratos = contaPoupanca.getExtratos();
             extratos.add(extrato);
             contaPoupanca.setExtratos(extratos);
@@ -207,9 +207,9 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
                 throw new InfrastructureException("202", "Saldo insuficiente");
             }
             Extrato extrato = operacaoBancariaStrategy.gravarExtrato(contaPoupanca, "Saque", "Retirado de valor da conta", Double.parseDouble(conta.valor()));
-            if (contaPoupanca.getExtratos() == null) {
-                contaPoupanca.setExtratos(new ArrayList<>());
-            }
+            //if (contaPoupanca.getExtratos() == null) {
+            //    contaPoupanca.setExtratos(new ArrayList<>());
+            //}
             List<Extrato> extratos = contaPoupanca.getExtratos();
             extratos.add(extrato);
             contaPoupanca.setExtratos(extratos);
@@ -313,6 +313,10 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
 
         if(contaOrigem.getSaldo() > (Double.parseDouble(requestTransferenciaDTO.valor()))){
             try{
+                Extrato extratoContaOrigem = operacaoBancariaStrategy.gravarExtrato(contaOrigem, "Transferencia", "Transferido de valor da conta", Double.parseDouble(requestTransferenciaDTO.valor()));
+                contaOrigem.getExtratos().add(extratoContaOrigem);
+                Extrato extratoContaDestino = operacaoBancariaStrategy.gravarExtrato(contaDestino, "Transferencia", "Recebido de valor da conta", Double.parseDouble(requestTransferenciaDTO.valor()));
+                contaDestino.getExtratos().add(extratoContaDestino);
                 operacaoBancariaStrategy.transferir(contaOrigem, contaDestino, Double.parseDouble(requestTransferenciaDTO.valor()));
             }catch (Exception ex){
                 throw new InfrastructureException("202", ex.getMessage());
