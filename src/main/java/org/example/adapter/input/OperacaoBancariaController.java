@@ -1,9 +1,6 @@
 package org.example.adapter.input;
 
-import org.example.adapter.input.dto.RequestConsultarContaDTO;
-import org.example.adapter.input.dto.RequestCriacaoContaDTO;
-import org.example.adapter.input.dto.RequestDepositoDTO;
-import org.example.adapter.input.dto.RequestSaqueDTO;
+import org.example.adapter.input.dto.*;
 import org.example.adapter.output.dto.*;
 import org.example.port.input.OperacaoBancariaUseCase;
 import org.springframework.http.ResponseEntity;
@@ -169,6 +166,25 @@ public class OperacaoBancariaController {
                 RequestConsultarContaDTO.builder()
                         .conta(conta)
                         .agencia(agencia)
+                        .build()
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/transferir")
+    public ResponseEntity<ResponseTransferenciaDTO> transferir(
+            @RequestHeader String contaOrigem,
+            @RequestHeader String agenciaOrigem,
+            @RequestHeader String contaDestino,
+            @RequestHeader String agenciaDestino,
+            @RequestHeader double valor){
+        ResponseTransferenciaDTO response = operacaoBancariaUseCase.transferir(
+                RequestTransferenciaDTO.builder()
+                        .contaOrigem(contaOrigem)
+                        .agenciaOrigem(agenciaOrigem)
+                        .contaDestino(contaDestino)
+                        .agenciaDestino(agenciaDestino)
+                        .valor(((Double)valor).toString())
                         .build()
         );
         return ResponseEntity.ok(response);

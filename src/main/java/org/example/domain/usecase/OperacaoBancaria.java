@@ -1,10 +1,7 @@
 package org.example.domain.usecase;
 
 import org.example.adapter.exception.infrastructure.InfrastructureException;
-import org.example.adapter.input.dto.RequestConsultarContaDTO;
-import org.example.adapter.input.dto.RequestCriacaoContaDTO;
-import org.example.adapter.input.dto.RequestDepositoDTO;
-import org.example.adapter.input.dto.RequestSaqueDTO;
+import org.example.adapter.input.dto.*;
 import org.example.adapter.output.dto.*;
 import org.example.domain.entities.Conta;
 import org.example.domain.entities.ContaCorrente;
@@ -289,5 +286,52 @@ public class OperacaoBancaria implements OperacaoBancariaUseCase {
         } catch (Exception ex){
             throw new InfrastructureException("202", ex.getMessage());
         }
+    }
+
+    @Override
+    public ResponseTransferenciaDTO transferir(RequestTransferenciaDTO requestTransferenciaDTO){
+        LocalDateTime timestampInicio = LocalDateTime.now();
+        Conta contaOrigem;
+        Conta contaDestino;
+        try{
+            contaOrigem =  operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(requestTransferenciaDTO.contaOrigem()), Integer.parseInt(requestTransferenciaDTO.agenciaOrigem()));
+            if(contaOrigem == null){
+                contaOrigem = operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(requestTransferenciaDTO.contaOrigem()), Integer.parseInt(requestTransferenciaDTO.agenciaOrigem()));
+            }
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
+
+        try{
+            contaDestino = operacaoBancariaStrategy.buscarContaCorrente(Integer.parseInt(requestTransferenciaDTO.contaDestino()), Integer.parseInt(requestTransferenciaDTO.agenciaDestino()));
+            if(contaDestino == null){
+                contaDestino = operacaoBancariaStrategy.buscarContaPoupanca(Integer.parseInt(requestTransferenciaDTO.contaDestino()), Integer.parseInt(requestTransferenciaDTO.agenciaDestino()));
+            }
+        } catch (Exception ex){
+            throw new InfrastructureException("202", ex.getMessage());
+        }
+
+        if(contaOrigem.getSaldo() > (Double.parseDouble(requestTransferenciaDTO.valor()))){
+            try{
+                operacaoBancariaStrategy.transferir(contaOrigem, contaDestino, Double.parseDouble(requestTransferenciaDTO.valor()));
+            }catch (Exception ex){
+                throw new InfrastructureException("202", ex.getMessage());
+            }
+        }
+
+        return ResponseTransferenciaDTO.builder()
+                .agenciaOrigem(((Integer)contaOrigem.getAgencia()).toString())
+                .contaOrigem(((Integer)contaOrigem.getConta()).toString())
+                .agenciaDestino(((Integer)contaDestino.getAgencia()).toString())
+                .contaDestino(((Integer)contaDestino.getConta()).toString())
+                .valor(requestTransferenciaDTO.valor())
+                .detail(DetailDTO.builder()
+                        .codigoRetorno("200")
+                        .mensagemRetorno("Transferencia realizada com sucesso")
+                        .timestampInicio(timestampInicio.toString())
+                        .timestampFim(LocalDateTime.now().toString())
+                        .build())
+                .build();
+
     }
 }

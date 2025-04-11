@@ -3,6 +3,7 @@ package org.example.domain.usecase.strategy;
 import org.example.adapter.input.dto.RequestConsultarContaDTO;
 import org.example.adapter.input.dto.RequestCriacaoContaDTO;
 import org.example.adapter.input.dto.RequestDepositoDTO;
+import org.example.adapter.input.dto.RequestTransferenciaDTO;
 import org.example.domain.entities.Conta;
 import org.example.domain.entities.ContaCorrente;
 import org.example.domain.entities.ContaPoupanca;
@@ -91,4 +92,18 @@ public class OperacaoBancariaStrategy{
         return conta.getExtratos();
     }
 
+    public void transferir(Conta contaOrigem, Conta contaDestino, double valor){
+        contaOrigem.setSaldo(contaOrigem.getSaldo() - valor);
+        contaDestino.setSaldo(contaDestino.getSaldo() + valor);
+        if(contaOrigem instanceof ContaCorrente){
+            contaCorrenteRepository.save((ContaCorrente) contaOrigem);
+        } else if(contaOrigem instanceof ContaPoupanca){
+            contaPoupancaRepository.save((ContaPoupanca) contaOrigem);
+        }
+        if (contaDestino instanceof ContaCorrente){
+            contaCorrenteRepository.save((ContaCorrente) contaDestino);
+        } else if(contaDestino instanceof ContaPoupanca){
+            contaPoupancaRepository.save((ContaPoupanca) contaDestino);
+        }
+    }
 }

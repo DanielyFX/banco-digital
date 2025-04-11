@@ -1,9 +1,6 @@
 package org.example.port.input;
 
-import org.example.adapter.input.dto.RequestConsultarContaDTO;
-import org.example.adapter.input.dto.RequestCriacaoContaDTO;
-import org.example.adapter.input.dto.RequestDepositoDTO;
-import org.example.adapter.input.dto.RequestSaqueDTO;
+import org.example.adapter.input.dto.*;
 import org.example.adapter.output.dto.*;
 
 
@@ -18,6 +15,7 @@ public interface OperacaoBancariaUseCase {
     ResponseSaqueDTO sacarContaPoupanca(RequestSaqueDTO conta);
     ResponseListaExtratosDTO listarExtratosContaCorrente(RequestConsultarContaDTO conta);
     ResponseListaExtratosDTO listarExtratosContaPoupanca(RequestConsultarContaDTO conta);
+    ResponseTransferenciaDTO transferir(RequestTransferenciaDTO requestTransferenciaDTO);
 
 
 }
